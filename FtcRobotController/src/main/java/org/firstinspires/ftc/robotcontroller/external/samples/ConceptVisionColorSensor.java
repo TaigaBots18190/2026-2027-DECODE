@@ -59,8 +59,7 @@ import org.firstinspires.ftc.vision.opencv.PredominantColorProcessor;
  * Remove or comment out the @Disabled line to add this OpMode to the Driver Station OpMode list
  */
 
-@Disabled
-@TeleOp(name = "Concept: Vision Color-Sensor", group = "Concept")
+@TeleOp(name = "CVtest", group = "Concept")
 public class ConceptVisionColorSensor extends LinearOpMode
 {
     @Override
@@ -89,15 +88,14 @@ public class ConceptVisionColorSensor extends LinearOpMode
          *     eg: Green may be reported as YELLOW, as this may be the "closest" match.
          */
         PredominantColorProcessor colorSensor = new PredominantColorProcessor.Builder()
-                .setRoi(ImageRegion.asUnityCenterCoordinates(-0.1, 0.1, 0.1, -0.1))
+                .setRoi(ImageRegion.asUnityCenterCoordinates(0.2, -0, 0.4, -0.1))
                 .setSwatches(
                         PredominantColorProcessor.Swatch.ARTIFACT_GREEN,
                         PredominantColorProcessor.Swatch.ARTIFACT_PURPLE,
-                        PredominantColorProcessor.Swatch.RED,
-                        PredominantColorProcessor.Swatch.BLUE,
-                        PredominantColorProcessor.Swatch.YELLOW,
+                        PredominantColorProcessor.Swatch.WHITE,
                         PredominantColorProcessor.Swatch.BLACK,
-                        PredominantColorProcessor.Swatch.WHITE)
+                        PredominantColorProcessor.Swatch.YELLOW,
+                        PredominantColorProcessor.Swatch.BLUE)
                 .build();
 
         /*
@@ -115,7 +113,7 @@ public class ConceptVisionColorSensor extends LinearOpMode
         VisionPortal portal = new VisionPortal.Builder()
                 .addProcessor(colorSensor)
                 .setCameraResolution(new Size(320, 240))
-                .setCamera(hardwareMap.get(WebcamName.class, "Webcam 1"))
+                .setCamera(hardwareMap.get(WebcamName.class, "logi"))
                 .build();
 
         telemetry.setMsTransmissionInterval(100);  // Speed up telemetry updates, for debugging.

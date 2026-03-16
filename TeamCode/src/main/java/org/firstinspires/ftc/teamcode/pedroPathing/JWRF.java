@@ -3,24 +3,12 @@ package org.firstinspires.ftc.teamcode.pedroPathing; // make sure this aligns wi
 
 
 
-
-
-
-
 import static org.firstinspires.ftc.teamcode.pedroPathing.Drawing.drawPoseHistory;
 
 
 
 
-
-
-
-
 import android.util.Size;
-
-
-
-
 
 
 
@@ -48,10 +36,6 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 
 
-
-
-
-
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.vision.VisionPortal;
 import org.firstinspires.ftc.vision.opencv.ImageRegion;
@@ -60,15 +44,7 @@ import org.firstinspires.ftc.vision.opencv.PredominantColorProcessor;
 
 
 
-
-
-
-
 import java.util.List;
-
-
-
-
 
 
 
@@ -79,16 +55,8 @@ public class JWRF extends OpMode {
 
 
 
-
-
-
-
     private Follower follower;
     private Timer pathTimer, actionTimer, opmodeTimer;
-
-
-
-
 
 
 
@@ -96,15 +64,9 @@ public class JWRF extends OpMode {
     private int pathState;// Lowest (Third Set) of Artifacts from the Spike Mark.
 
 
-
-
     private final double BlueHoodX = 14;
     private final double BlueHoodY = 129;
     double formula = 0;
-
-
-
-
 
 
 
@@ -122,26 +84,18 @@ public class JWRF extends OpMode {
 
 
 
-
-
-
-
     private DcMotor intake;
 
 
 
 
-
-
-
-
-    private double increment = 0.2085;
-    private double pos1Intake = 0.6708; // .9
-    private double pos2Intake = 0.4695; // .7499
-    private double pos3Intake = 0.2651; // .5404
-    private double pos1Shoot = 0.9829; // .6444
-    private double pos2Shoot = 0.7803; // .4381
-    private double pos3Shoot = 0.5706; // .2331k≥≥≥≥≥≥≥≥≥≥≥≥
+    private double increment = -0.2055;
+    private double pos1Intake = 0.6355; // .9
+    private double pos2Intake = 0.4355; // .7499
+    private double pos3Intake = 0.2244; // .5404
+    private double pos1Shoot = 0.9476; // .6444
+    private double pos2Shoot = 0.7392; // .4381
+    private double pos3Shoot = 0.5303; // .2331k≥≥≥≥≥≥≥≥≥≥≥≥
     private double TurretPosition = 0; // may need to change
     private int turretExtremeLeft = 1700; // may need to change
     private int turretExtremeRight = -350; // may need to change
@@ -151,6 +105,7 @@ public class JWRF extends OpMode {
     private boolean track = false;
     private int turretPose = 0;
     private double kP = 5;
+    private boolean vel = false;
     private boolean resetPattern = false;
     private static boolean shooting = false;
     private boolean shooting2 = false;
@@ -163,20 +118,13 @@ public class JWRF extends OpMode {
     boolean centerControl = false;
     boolean turret123 = false;
     boolean intakeBool = false;
+    private ElapsedTime start;
     double hoodPos = 0;
 
 
 
 
-
-
-
-
     PredominantColorProcessor colorSensor;
-
-
-
-
 
 
 
@@ -195,10 +143,6 @@ public class JWRF extends OpMode {
 
 
 
-
-
-
-
     ElapsedTime xTime = new ElapsedTime();
     ElapsedTime bTime = new ElapsedTime();
     ElapsedTime yTime = new ElapsedTime();
@@ -211,15 +155,7 @@ public class JWRF extends OpMode {
 
 
 
-
-
-
-
     private boolean flag = true;
-
-
-
-
 
 
 
@@ -243,10 +179,6 @@ public class JWRF extends OpMode {
 
 
 
-
-
-
-
     }
     public void turretTracker(boolean track) {
         if (!track) return;
@@ -254,19 +186,11 @@ public class JWRF extends OpMode {
 
 
 
-
-
-
-
         if (detection) {
             double targetAngleDeg = ((Math.toDegrees(Math.atan((144 - follower.getPose().getY()) / (144-follower.getPose().getX()))) % 180) + 180) % 180;
-            double robotHeadingDeg = Math.toDegrees(follower.getHeading());
+            double robotHeadingDeg = ((Math.toDegrees(follower.getHeading()) % 360) + 360) % 360;
             double turretAngleDeg = targetAngleDeg - (robotHeadingDeg - 90);
             turretPose = (int) (turretAngleDeg * m);
-
-
-
-
 
 
 
@@ -276,13 +200,9 @@ public class JWRF extends OpMode {
             }
         } else {
             double targetAngleDeg = ((Math.toDegrees(Math.atan((144 - follower.getPose().getY()) / (72-follower.getPose().getX()))) % 180) + 180) % 180;
-            double robotHeadingDeg = Math.toDegrees(follower.getHeading());
+            double robotHeadingDeg = ((Math.toDegrees(follower.getHeading()) % 360) + 360) % 360;
             double turretAngleDeg = targetAngleDeg - (robotHeadingDeg - 90);
             turretPose = (int) (turretAngleDeg * m);
-
-
-
-
 
 
 
@@ -295,15 +215,7 @@ public class JWRF extends OpMode {
 
 
 
-
-
-
-
         LLResult result1 = limelight.getLatestResult();
-
-
-
-
 
 
 
@@ -314,15 +226,7 @@ public class JWRF extends OpMode {
 
 
 
-
-
-
-
         if (result1 != null && result1.isValid()) {
-
-
-
-
 
 
 
@@ -332,15 +236,7 @@ public class JWRF extends OpMode {
 
 
 
-
-
-
-
             double error = result1.getTx();
-
-
-
-
 
 
 
@@ -349,10 +245,6 @@ public class JWRF extends OpMode {
                 gamepad1.rumble(100);
                 gamepad2.rumble(100);
             }
-
-
-
-
 
 
 
@@ -377,25 +269,9 @@ public class JWRF extends OpMode {
 
 
 
-
-
-
-
         }
         turret.setTargetPosition(turretPose);
     }
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -453,10 +329,6 @@ public class JWRF extends OpMode {
                                 }
                             }
                         }
-
-
-
-
 
 
 
@@ -652,10 +524,6 @@ public class JWRF extends OpMode {
 
 
 
-
-
-
-
                 if (stopShooting) {
                     iteration = 0;
                     indexerState = 0;
@@ -663,10 +531,6 @@ public class JWRF extends OpMode {
                     centerControl = false;
                     shooting = false;
                 }
-
-
-
-
 
 
 
@@ -706,10 +570,6 @@ public class JWRF extends OpMode {
                                 flag = true;
                             }
                         }
-
-
-
-
 
 
 
@@ -781,23 +641,13 @@ public class JWRF extends OpMode {
 
 
 
-
-
-
-
-
-
-
-
     private final Pose startPose = new Pose(88, 7, Math.toRadians(90));
     private final Pose ShootPose = new Pose(96.57458563535913, 95.8674033149171, Math.toRadians(52));
     private final Pose ShootPose1 = new Pose(84.13812154696132, 17.734806629834296,Math.toRadians(69));
     private final Pose pickup1Pose = new Pose(102.62983425414362, 83.10497237569064, Math.toRadians(0));
     private final Pose pickup2Pose = new Pose(100.75690607734808, 58.889502762430936, Math.toRadians(0));
     private final Pose pickup3Pose = new Pose(101.21546961325969, 34.607734806629836, Math.toRadians(0));
-    private final Pose pickup4Pose = new Pose(125.70165745856353, 8.552486187845302, Math.toRadians(0));
-
-
+    private final Pose pickup4Pose = new Pose(134, 15.689703808180536, Math.toRadians(-21));
 
 
     private final Pose intake1Pose = new Pose(119.49723756906077, 83.09944751381215, Math.toRadians(0));
@@ -805,8 +655,6 @@ public class JWRF extends OpMode {
     private final Pose intake3Pose = new Pose(120.45856353591161, 34.68508287292818, Math.toRadians(0));
     private final Pose intake4Pose = new Pose(135.82872928176798, 8.685082872928163, Math.toRadians(0));
     private final Pose endpose = new Pose(112.08287292817678, 72.17679558011054, Math.toRadians(90));
-
-
 
 
     private final Pose Ctrl1 = new Pose(87.07734806629834, 45.80662983425415);
@@ -817,14 +665,8 @@ public class JWRF extends OpMode {
     private final Pose Gate = new Pose(129.3922651933702,73.98895027624306,Math.toRadians(90));
 
 
-
-
-    private PathChain scorePreload, grabPickup4, intakePickup4, scorePickup4,  grabPickup1, intakePickup1, HittingGate ,scorePickup1, grabPickup2, intakePickup2, scorePickup2, grabPickup3, intakePickup3, scorePickup3, ending;
+    private PathChain scorePreload, grabPickup4, grabPickupConcept, intakePickup4, scorePickup4,  grabPickup1, intakePickup1, HittingGate ,scorePickup1, grabPickup2, intakePickup2, scorePickup2, grabPickup3, intakePickup3, scorePickup3, ending;
     private PathChain end;
-
-
-
-
 
 
 
@@ -836,23 +678,22 @@ public class JWRF extends OpMode {
                 .build();
 
 
-
-
         grabPickup4 = follower.pathBuilder()
                 .addPath(new BezierLine(ShootPose1, pickup4Pose))
-                .setLinearHeadingInterpolation(ShootPose.getHeading(), pickup4Pose.getHeading())
+                .setConstantHeadingInterpolation(Math.toRadians(0))
                 .setBrakingStrength(1)
                 .build();
+
+
+
         intakePickup4 = follower.pathBuilder()
                 .addPath(new BezierLine(pickup4Pose, intake4Pose))
                 .setLinearHeadingInterpolation(pickup4Pose.getHeading(), intake4Pose.getHeading())
                 .build();
         scorePickup4 = follower.pathBuilder()
-                .addPath(new BezierLine(intake4Pose, ShootPose1))
-                .setLinearHeadingInterpolation(intake4Pose.getHeading(),ShootPose1.getHeading())
+                .addPath(new BezierLine(pickup4Pose, ShootPose1))
+                .setLinearHeadingInterpolation(pickup4Pose.getHeading(),ShootPose1.getHeading())
                 .build();
-
-
 
 
         grabPickup1 = follower.pathBuilder()
@@ -862,13 +703,9 @@ public class JWRF extends OpMode {
                 .build();
 
 
-
-
         intakePickup1 = follower.pathBuilder()
                 .addPath(new BezierLine(pickup1Pose, intake1Pose))
                 .build();
-
-
 
 
         HittingGate = follower.pathBuilder()
@@ -877,14 +714,10 @@ public class JWRF extends OpMode {
                 .build();
 
 
-
-
         scorePickup1 = follower.pathBuilder()
                 .addPath(new BezierLine(Gate, ShootPose))
                 .setLinearHeadingInterpolation(Gate.getHeading(), ShootPose.getHeading())
                 .build();
-
-
 
 
         grabPickup2 = follower.pathBuilder()
@@ -894,21 +727,15 @@ public class JWRF extends OpMode {
                 .build();
 
 
-
-
         intakePickup2 = follower.pathBuilder()
                 .addPath(new BezierLine(pickup2Pose, intake2Pose))
                 .build();
-
-
 
 
         scorePickup2 = follower.pathBuilder()
                 .addPath(new BezierLine(intake2Pose, ShootPose))
                 .setLinearHeadingInterpolation(intake2Pose.getHeading(), ShootPose.getHeading())
                 .build();
-
-
 
 
         grabPickup3 = follower.pathBuilder()
@@ -923,31 +750,17 @@ public class JWRF extends OpMode {
 
 
 
-
-
-
-
         scorePickup3 = follower.pathBuilder()
                 .addPath(new BezierLine(intake3Pose, ShootPose1))
                 .setLinearHeadingInterpolation(pickup3Pose.getHeading(), ShootPose1.getHeading())
                 .build();
 
 
-
-
         ending = follower.pathBuilder()
-                .addPath(new BezierLine(ShootPose1, endpose))
-                .setLinearHeadingInterpolation(ShootPose1.getHeading(), endpose.getHeading())
+                .addPath(new BezierLine(ShootPose1, new Pose(108.40902679830747, 12.44005641748941)))
+                .setConstantHeadingInterpolation(Math.toRadians(0))
                 .build();
     }
-
-
-
-
-
-
-
-
 
 
 
@@ -970,14 +783,6 @@ public class JWRF extends OpMode {
 
 
 
-
-
-
-
-
-
-
-
     public void autonomousPathUpdate() {
         switch (pathState) {
             case 0:
@@ -985,7 +790,7 @@ public class JWRF extends OpMode {
                 setPathState(1);
                 break;
             case 1:
-                if (!follower.isBusy()) {
+                if (!follower.isBusy() && start.milliseconds() > 3000) {
                     if (flag1) {
                         shooting = true;
                         flag1 = false;
@@ -1001,124 +806,75 @@ public class JWRF extends OpMode {
                 break;
             case 3:
                 if (!follower.isBusy()) {
-                    follower.followPath(intakePickup4);
+                    follower.followPath(scorePickup4);
                     setPathState(4);
                 }
                 break;
             case 4:
                 if (!follower.isBusy()) {
-                    follower.followPath(scorePickup4);
+                    if (flag2) {
+                        shooting = true;
+                        flag2 = false;
+                    }
                     setPathState(5);
                 }
                 break;
             case 5:
-                if (!follower.isBusy()) {
-                    if (flag2){
-                        shooting = true;
-                        flag2=false;
-                    }
+                if (!shooting) {
+                    follower.followPath(grabPickup4);
                     setPathState(6);
                 }
                 break;
             case 6:
-                if (!shooting) {
-                    follower.followPath(grabPickup1);
+                if (!follower.isBusy()) {
+                    follower.followPath(scorePickup4);
                     setPathState(7);
                 }
                 break;
             case 7:
                 if (!follower.isBusy()) {
-                    follower.followPath(intakePickup1);
+                    if (flag3) {
+                        shooting = true;
+                        flag3 = false;
+                    }
                     setPathState(8);
                 }
                 break;
             case 8:
-                if (!follower.isBusy()) {
-                    follower.followPath(HittingGate);
+                if (!shooting) {
+                    follower.followPath(grabPickup4);
                     setPathState(9);
                 }
                 break;
             case 9:
                 if (!follower.isBusy()) {
-                    follower.followPath(scorePickup1);
+                    follower.followPath(scorePickup4);
                     setPathState(10);
                 }
                 break;
             case 10:
                 if (!follower.isBusy()) {
-                    if (flag3) {
+                    if (flag4) {
                         shooting = true;
-                        flag3 = false;
+                        flag4 = false;
                     }
                     setPathState(11);
                 }
                 break;
             case 11:
                 if (!shooting) {
-                    follower.followPath(grabPickup2);
+                    follower.followPath(ending);
                     setPathState(12);
                 }
                 break;
             case 12:
                 if (!follower.isBusy()) {
-                    follower.followPath(intakePickup2);
-                    setPathState(13);
-                }
-                break;
-            case 13:
-                if (!follower.isBusy()) {
-                    follower.followPath(scorePickup2);
-                    setPathState(14);
-                }
-                break;
-            case 14:
-                if (!follower.isBusy()) {
-                    if (flag4) {
-                        shooting = true;
-                        flag4 = false;
-                    }
-                    setPathState(15);
-                }
-                break;
-            case 15:
-                if (!shooting) {
-                    follower.followPath(grabPickup3);
-                    setPathState(16);
-                }
-                break;
-            case 16:
-                if(!follower.isBusy()){
-                    follower.followPath(intakePickup3);
-                    setPathState(17);
-                }
-                break;
-            case 17:
-                if(!follower.isBusy()){
-                    follower.followPath(scorePickup3);
-                    setPathState(18);
-                }
-                break;
-            case 18:
-                if(!follower.isBusy()){
-                    if (flag5){
-                        shooting=true;
-                        flag5 = false;
-                    }
-                    setPathState(19);
-                }
-                break;
-            case 19:
-                if(!shooting){
-                    follower.followPath(ending);
                     setPathState(-1);
                 }
                 break;
+
         }
     }
-
-
-
-
 
 
 
@@ -1132,17 +888,9 @@ public class JWRF extends OpMode {
 
 
 
-
-
-
-
     /** This is the main loop of the OpMode, it will run repeatedly after clicking "Play". **/
     @Override
     public void loop() {
-
-
-
-
 
 
 
@@ -1154,19 +902,10 @@ public class JWRF extends OpMode {
 
 
 
-
-
-
-
         SharedClass.xPos = follower.getPose().getX();
         SharedClass.yPos = follower.getPose().getY();
         SharedClass.yaw = follower.getPose().getHeading();
         SharedClass.motif = motif;
-        SharedClass.turretPose = turret.getCurrentPosition();
-
-
-
-
 
 
 
@@ -1179,27 +918,17 @@ public class JWRF extends OpMode {
 
 
 
-
-
-
-
         turretTracker(true);
-        shooter1.setVelocity(1120);
+        if (!vel) {
+            shooter1.setVelocity(1440);
+        }
         automated_shoot(shooting);
         runIntake(true);
 
 
 
 
-
-
-
-
 // Reset latch once ball leaves ROI
-
-
-
-
 
 
 
@@ -1229,19 +958,7 @@ public class JWRF extends OpMode {
 
 
 
-
-
-
-
-
-
-
-
         indexerState = pattern.indexOf("X");
-
-
-
-
 
 
 
@@ -1278,15 +995,7 @@ public class JWRF extends OpMode {
 
 
 
-
-
-
-
         }
-
-
-
-
 
 
 
@@ -1304,10 +1013,6 @@ public class JWRF extends OpMode {
 
 
 
-
-
-
-
     /** This method is called once at the init of the OpMode. **/
     @Override
     public void init() {
@@ -1318,17 +1023,9 @@ public class JWRF extends OpMode {
 
 
 
-
-
-
-
         follower = Constants.createFollower(hardwareMap);
         follower.setStartingPose(startPose);
         buildPaths();
-
-
-
-
 
 
 
@@ -1341,12 +1038,8 @@ public class JWRF extends OpMode {
 
 
 
-
-
-
-
         colorSensor = new PredominantColorProcessor.Builder()
-                .setRoi(ImageRegion.asUnityCenterCoordinates(0.2, -0.5, 0.4, -0.8))
+                .setRoi(ImageRegion.asUnityCenterCoordinates(0.2, -0.85, 0.4, -0.95))
                 .setSwatches(
                         PredominantColorProcessor.Swatch.ARTIFACT_GREEN,
                         PredominantColorProcessor.Swatch.ARTIFACT_PURPLE,
@@ -1355,10 +1048,6 @@ public class JWRF extends OpMode {
                         PredominantColorProcessor.Swatch.YELLOW,
                         PredominantColorProcessor.Swatch.BLUE)
                 .build();
-
-
-
-
 
 
 
@@ -1372,18 +1061,10 @@ public class JWRF extends OpMode {
 
 
 
-
-
-
-
         frontLeftMotor = hardwareMap.get(DcMotor.class, "flm");
         frontRightMotor = hardwareMap.get(DcMotor.class, "frm");
         backLeftMotor = hardwareMap.get(DcMotor.class, "blm");
         backRightMotor = hardwareMap.get(DcMotor.class, "brm");
-
-
-
-
 
 
 
@@ -1394,16 +1075,8 @@ public class JWRF extends OpMode {
 
 
 
-
-
-
-
         frontLeftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         backLeftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
-
-
-
-
 
 
 
@@ -1414,11 +1087,7 @@ public class JWRF extends OpMode {
         turret.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         turret.setTargetPosition(0);
         turret.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        turret.setPower(1);
-
-
-
-
+        turret.setPower(0.8);
 
 
 
@@ -1435,28 +1104,12 @@ public class JWRF extends OpMode {
 
 
 
-
-
-
-
-
-
-
-
         indexer = hardwareMap.get(Servo.class, "index");
 
 
 
 
-
-
-
-
         hinge = hardwareMap.get(Servo.class, "h");
-
-
-
-
 
 
 
@@ -1467,19 +1120,11 @@ public class JWRF extends OpMode {
 
 
 
-
-
-
-
         IMU imu = hardwareMap.get(IMU.class, "imu");
         IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
                 RevHubOrientationOnRobot.LogoFacingDirection.LEFT,
                 RevHubOrientationOnRobot.UsbFacingDirection.UP));
         imu.initialize(parameters);
-
-
-
-
 
 
 
@@ -1499,29 +1144,13 @@ public class JWRF extends OpMode {
 
 
 
-
-
-
-
         String manual_shoot = "";
 
 
 
 
-
-
-
-
         hinge.setPosition(0.09);
-
-
-
-
-
-
-
-
-
+        hoodExtension.setPosition(0);
 
 
 
@@ -1531,10 +1160,6 @@ public class JWRF extends OpMode {
 
 
     }
-
-
-
-
 
 
 
@@ -1546,25 +1171,14 @@ public class JWRF extends OpMode {
 
 
 
-
-
-
-
     /** This method is called once at the start of the OpMode.
      * It runs all the setup actions, including building paths and starting the path system **/
     @Override
     public void start() {
         follower.activateAllPIDFs();
+        start = new ElapsedTime();
         setPathState(0);
     }
-
-
-
-
-
-
-
-
 
 
 
@@ -1584,19 +1198,7 @@ public class JWRF extends OpMode {
 
 
 
-
-
-
-
-
-
-
-
 }
-
-
-
-
 
 
 

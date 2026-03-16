@@ -3,24 +3,12 @@ package org.firstinspires.ftc.teamcode.pedroPathing; // make sure this aligns wi
 
 
 
-
-
-
-
 import static org.firstinspires.ftc.teamcode.pedroPathing.Drawing.drawPoseHistory;
 
 
 
 
-
-
-
-
 import android.util.Size;
-
-
-
-
 
 
 
@@ -48,10 +36,6 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 
 
-
-
-
-
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.vision.VisionPortal;
 import org.firstinspires.ftc.vision.opencv.ImageRegion;
@@ -60,15 +44,7 @@ import org.firstinspires.ftc.vision.opencv.PredominantColorProcessor;
 
 
 
-
-
-
-
 import java.util.List;
-
-
-
-
 
 
 
@@ -79,58 +55,39 @@ public class JWRC extends OpMode {
 
 
 
-
-
-
-
     private Follower follower;
     private Timer pathTimer, actionTimer, opmodeTimer;
     /// dsadsadasdasdaasdaasds
     /// manas was here, on some 67 stuff
 
 
-
-
     private int pathState;// Lowest (Third Set) of Artifacts from the Spike Mark.
     private final Pose startPose = new Pose(110.69613259668509, 135.6906077348066, Math.toRadians(90));
     private final Pose ShootPose = new Pose(96.57458563535913, 95.8674033149171, Math.toRadians(44)); //Try to implement april tag locking for heading and
-    private final Pose pickup1Pose = new Pose(102.62983425414362, 87.10497237569064, Math.toRadians(0));
-    private final Pose pickup2Pose = new Pose(100.75690607734808, 61.889502762430936, Math.toRadians(0));
-    private final Pose pickup3Pose = new Pose(101.21546961325969, 36.607734806629836, Math.toRadians(0));
+    private final Pose pickup1Pose = new Pose(100.62983425414362, 87.10497237569064, Math.toRadians(0));
+    private final Pose pickup2Pose = new Pose(98.75690607734808, 63.889502762430936, Math.toRadians(0));
+    private final Pose pickup3Pose = new Pose(98.21546961325969, 39.607734806629836, Math.toRadians(0));
+
+    boolean control = false;
+    ElapsedTime gate = new ElapsedTime();
 
 
-
-
-    private final Pose intake1Pose = new Pose(119.49723756906077, 87.09944751381215, Math.toRadians(0));
-    private final Pose intake2Pose = new Pose(120.10497237569061, 61.707182320441994, Math.toRadians(0));
-    private final Pose intake3Pose = new Pose(120.45856353591161, 36.68508287292818, Math.toRadians(0));
+    private final Pose intake1Pose = new Pose(124.49723756906077, 87.09944751381215, Math.toRadians(0));
+    private final Pose intake2Pose = new Pose(126.10497237569061, 63.707182320441994, Math.toRadians(0));
+    private final Pose intake3Pose = new Pose(127.45856353591161, 39.68508287292818, Math.toRadians(0));
     private final Pose endpose = new Pose(112.08287292817678, 72.17679558011054, Math.toRadians(90));
 
 
-
-
     private final Pose Ctrl1 = new Pose(78.71823204419888, 83.99999999999999);
-    private final Pose Ctrl2 = new Pose(78.37292817679558, 59.17955801104973);
+    private final Pose Ctrl2 = new Pose(78.37292817679558, 54.17955801104973);
     private final Pose Ctrl3 = new Pose(76.40883977900553, 40.27624309392262);
 
 
-
-
-    private final Pose CtrlGate = new Pose(82.87564256545761, 67.39570021619026);
-
-
+    private final Pose CtrlGate = new Pose(107.37012113055181, 82.95020188425303);
 
 
     private final Pose Gate = new Pose(127.3922651933702,79.98895027624306,Math.toRadians(90));
     private double angle;
-
-
-
-
-
-
-
-
 
 
 
@@ -152,26 +109,18 @@ public class JWRC extends OpMode {
 
 
 
-
-
-
-
     private DcMotor intake;
 
 
 
 
-
-
-
-
-    private double increment = 0.2085;
-    private double pos1Intake = 0.6708; // .9
-    private double pos2Intake = 0.4695; // .7499
-    private double pos3Intake = 0.2651; // .5404
-    private double pos1Shoot = 0.9829; // .6444
-    private double pos2Shoot = 0.7803; // .4381
-    private double pos3Shoot = 0.5706; // .2331k≥≥≥≥≥≥≥≥≥≥≥≥
+    private double increment = -0.2055;
+    private double pos1Intake = 0.6355; // .9
+    private double pos2Intake = 0.4355; // .7499
+    private double pos3Intake = 0.2244; // .5404
+    private double pos1Shoot = 0.9476; // .6444
+    private double pos2Shoot = 0.7392; // .4381
+    private double pos3Shoot = 0.5303; // .2331k≥≥≥≥≥≥≥≥≥≥≥≥
     private double TurretPosition = 0; // may need to change
     private int turretExtremeLeft = 1700; // may need to change
     private int turretExtremeRight = -350; // may need to change
@@ -198,15 +147,7 @@ public class JWRC extends OpMode {
 
 
 
-
-
-
-
     PredominantColorProcessor colorSensor;
-
-
-
-
 
 
 
@@ -225,10 +166,6 @@ public class JWRC extends OpMode {
 
 
 
-
-
-
-
     ElapsedTime xTime = new ElapsedTime();
     ElapsedTime bTime = new ElapsedTime();
     ElapsedTime yTime = new ElapsedTime();
@@ -241,15 +178,7 @@ public class JWRC extends OpMode {
 
 
 
-
-
-
-
     private boolean flag = true;
-
-
-
-
 
 
 
@@ -273,10 +202,6 @@ public class JWRC extends OpMode {
 
 
 
-
-
-
-
     }
     public void turretTracker(boolean track) {
         if (!track) return;
@@ -284,19 +209,11 @@ public class JWRC extends OpMode {
 
 
 
-
-
-
-
         if (detection) {
-            double targetAngleDeg = ((Math.toDegrees(Math.atan((144 - follower.getPose().getY()) / (144-follower.getPose().getX()))) % 180) + 180) % 180;
-            double robotHeadingDeg = Math.toDegrees(follower.getHeading());
+            double targetAngleDeg = ((Math.toDegrees(Math.atan((148 - follower.getPose().getY()) / (144-follower.getPose().getX()))) % 180) + 180) % 180;
+            double robotHeadingDeg = ((Math.toDegrees(follower.getHeading()) % 360) + 360) % 360;
             double turretAngleDeg = targetAngleDeg - (robotHeadingDeg - 90);
             turretPose = (int) (turretAngleDeg * m);
-
-
-
-
 
 
 
@@ -306,18 +223,12 @@ public class JWRC extends OpMode {
             }
 
 
-
-
             angle = targetAngleDeg;
         } else {
             double targetAngleDeg = ((Math.toDegrees(Math.atan((144 - follower.getPose().getY()) / (72-follower.getPose().getX()))) % 180) + 180) % 180;
-            double robotHeadingDeg = Math.toDegrees(follower.getHeading());
+            double robotHeadingDeg = ((Math.toDegrees(follower.getHeading()) % 360) + 360) % 360;
             double turretAngleDeg = targetAngleDeg - (robotHeadingDeg - 90);
             turretPose = (int) (turretAngleDeg * m);
-
-
-
-
 
 
 
@@ -335,19 +246,7 @@ public class JWRC extends OpMode {
 
 
 
-
-
-
-
-
-
-
-
         LLResult result1 = limelight.getLatestResult();
-
-
-
-
 
 
 
@@ -358,15 +257,7 @@ public class JWRC extends OpMode {
 
 
 
-
-
-
-
         if (result1 != null && result1.isValid()) {
-
-
-
-
 
 
 
@@ -376,15 +267,7 @@ public class JWRC extends OpMode {
 
 
 
-
-
-
-
             double error = result1.getTx();
-
-
-
-
 
 
 
@@ -393,10 +276,6 @@ public class JWRC extends OpMode {
                 gamepad1.rumble(100);
                 gamepad2.rumble(100);
             }
-
-
-
-
 
 
 
@@ -421,25 +300,9 @@ public class JWRC extends OpMode {
 
 
 
-
-
-
-
         }
         turret.setTargetPosition(turretPose);
     }
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -472,7 +335,7 @@ public class JWRC extends OpMode {
                                 if (hingeTime.milliseconds() > 1175) {
                                     hinge.setPosition(0.09);
                                     flag = false;
-                                    if (hinge12.milliseconds() > 1350) {
+                                    if (hinge12.milliseconds() > 1450) {
                                         iteration += 1;
                                         hingeTime.reset();
                                         indexerTime.reset();
@@ -497,10 +360,6 @@ public class JWRC extends OpMode {
                                 }
                             }
                         }
-
-
-
-
 
 
 
@@ -554,7 +413,7 @@ public class JWRC extends OpMode {
                                 if (hingeTime.milliseconds() > 1175) {
                                     hinge.setPosition(0.09);
                                     flag = false;
-                                    if (hinge12.milliseconds() > 1350) {
+                                    if (hinge12.milliseconds() > 1450) {
                                         iteration += 1;
                                         hingeTime.reset();
                                         indexerTime.reset();
@@ -628,7 +487,7 @@ public class JWRC extends OpMode {
                                 if (hingeTime.milliseconds() > 1175) {
                                     hinge.setPosition(0.09);
                                     flag = false;
-                                    if (hinge12.milliseconds() > 1350) {
+                                    if (hinge12.milliseconds() > 1450) {
                                         iteration += 1;
                                         hingeTime.reset();
                                         indexerTime.reset();
@@ -696,10 +555,6 @@ public class JWRC extends OpMode {
 
 
 
-
-
-
-
                 if (stopShooting) {
                     iteration = 0;
                     indexerState = 0;
@@ -707,10 +562,6 @@ public class JWRC extends OpMode {
                     centerControl = false;
                     shooting = false;
                 }
-
-
-
-
 
 
 
@@ -726,7 +577,7 @@ public class JWRC extends OpMode {
                             if (hingeTime.milliseconds() > 1175) {
                                 hinge.setPosition(0.09);
                                 flag = false;
-                                if (hinge12.milliseconds() > 1350) {
+                                if (hinge12.milliseconds() > 1450) {
                                     iteration += 1;
                                     hingeTime.reset();
                                     indexerTime.reset();
@@ -750,10 +601,6 @@ public class JWRC extends OpMode {
                                 flag = true;
                             }
                         }
-
-
-
-
 
 
 
@@ -835,30 +682,8 @@ public class JWRC extends OpMode {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     private PathChain scorePreload, grabPickup1, intakePickup1, HittingGate ,scorePickup1, grabPickup2, intakePickup2, scorePickup2, grabPickup3, intakePickup3, scorePickup3, ending;
     private PathChain end;
-
-
-
-
 
 
 
@@ -867,11 +692,8 @@ public class JWRC extends OpMode {
         scorePreload = follower.pathBuilder()
                 .addPath(new BezierLine(startPose, ShootPose))
                 .setLinearHeadingInterpolation(startPose.getHeading(), ShootPose.getHeading())
+                .setBrakingStrength(1)
                 .build();
-
-
-
-
 
 
 
@@ -882,14 +704,11 @@ public class JWRC extends OpMode {
                 .build();
 
 
-
-
         intakePickup1 = follower.pathBuilder()
                 .addPath(new BezierLine(pickup1Pose, intake1Pose))
                 .setLinearHeadingInterpolation(pickup1Pose.getHeading(), intake1Pose.getHeading())
+                .setBrakingStrength(0.5)
                 .build();
-
-
 
 
         HittingGate = follower.pathBuilder()
@@ -898,14 +717,10 @@ public class JWRC extends OpMode {
                 .build();
 
 
-
-
         scorePickup1 = follower.pathBuilder()
                 .addPath(new BezierLine(Gate, ShootPose))
                 .setLinearHeadingInterpolation(Gate.getHeading(), ShootPose.getHeading())
                 .build();
-
-
 
 
         grabPickup2 = follower.pathBuilder()
@@ -914,22 +729,17 @@ public class JWRC extends OpMode {
                 .build();
 
 
-
-
         intakePickup2 = follower.pathBuilder()
                 .addPath(new BezierLine(pickup2Pose, intake2Pose))
                 .setLinearHeadingInterpolation(pickup2Pose.getHeading(), intake2Pose.getHeading())
+                .setBrakingStrength(0.5)
                 .build();
-
-
 
 
         scorePickup2 = follower.pathBuilder()
-                .addPath(new BezierLine(intake2Pose, ShootPose))
+                .addPath(new BezierCurve(intake2Pose, new Pose(101, 64), ShootPose))
                 .setLinearHeadingInterpolation(intake2Pose.getHeading(), ShootPose.getHeading())
                 .build();
-
-
 
 
         grabPickup3 = follower.pathBuilder()
@@ -939,11 +749,8 @@ public class JWRC extends OpMode {
         intakePickup3 = follower.pathBuilder()
                 .addPath(new BezierLine(pickup3Pose, intake3Pose))
                 .setLinearHeadingInterpolation(pickup3Pose.getHeading(), intake3Pose.getHeading())
+                .setBrakingStrength(0.5)
                 .build();
-
-
-
-
 
 
 
@@ -952,8 +759,6 @@ public class JWRC extends OpMode {
                 .addPath(new BezierLine(intake3Pose, ShootPose))
                 .setLinearHeadingInterpolation(pickup3Pose.getHeading(), ShootPose.getHeading())
                 .build();
-
-
 
 
         ending = follower.pathBuilder()
@@ -969,27 +774,11 @@ public class JWRC extends OpMode {
 
 
 
-
-
-
-
-
-
-
-
     // Setup a variable for each drive wheel to save power level for telemetry
     private boolean flag1 = true;
     private boolean flag2 = true;
     private boolean flag3 = true;
     private boolean flag4 = true;
-
-
-
-
-
-
-
-
 
 
 
@@ -1033,8 +822,11 @@ public class JWRC extends OpMode {
                 break;
             case 5:
                 if (!follower.isBusy()) {
-                    follower.followPath(scorePickup1);
-                    setPathState(6);
+                    control = true;
+                    if (gate.milliseconds() > 500) {
+                        follower.followPath(scorePickup1);
+                        setPathState(6);
+                    }
                 }
                 break;
             case 6:
@@ -1112,19 +904,11 @@ public class JWRC extends OpMode {
 
 
 
-
-
-
-
     /** These change the states of the paths and actions. It will also reset the timers of the individual switches **/
     public void setPathState(int pState) {
         pathState = pState;
         pathTimer.resetTimer();
     }
-
-
-
-
 
 
 
@@ -1136,17 +920,9 @@ public class JWRC extends OpMode {
 
 
 
-
-
-
-
         char green = 'G';
         char purple = 'P';
         char x1 = 'X';
-
-
-
-
 
 
 
@@ -1155,11 +931,6 @@ public class JWRC extends OpMode {
         SharedClass.yPos = follower.getPose().getY();
         SharedClass.yaw = follower.getPose().getHeading();
         SharedClass.motif = motif;
-        SharedClass.turretPose = turret.getCurrentPosition();
-
-
-
-
 
 
 
@@ -1171,27 +942,15 @@ public class JWRC extends OpMode {
 
 
 
-
-
-
-
         turretTracker(true);
-        shooter1.setVelocity(1120);
+        shooter1.setVelocity(1100);
         automated_shoot(shooting);
         runIntake(true);
 
 
 
 
-
-
-
-
 // Reset latch once ball leaves ROI
-
-
-
-
 
 
 
@@ -1221,19 +980,7 @@ public class JWRC extends OpMode {
 
 
 
-
-
-
-
-
-
-
-
         indexerState = pattern.indexOf("X");
-
-
-
-
 
 
 
@@ -1252,13 +999,13 @@ public class JWRC extends OpMode {
             }
             PredominantColorProcessor.Result result = colorSensor.getAnalysis();
             if (count(pattern, x1) > 0 && !shooting && !shooting2 && !centerControl) {
-                if (result.closestSwatch == PredominantColorProcessor.Swatch.ARTIFACT_GREEN && colorTime.milliseconds() > 500) {
+                if (result.closestSwatch == PredominantColorProcessor.Swatch.ARTIFACT_GREEN && colorTime.milliseconds() > 400) {
                     pattern =
                             pattern.substring(0, indexerState)
                                     + "G"
                                     + pattern.substring(indexerState + 1);
                     colorTime.reset();
-                } else if (result.closestSwatch == PredominantColorProcessor.Swatch.ARTIFACT_PURPLE && colorTime.milliseconds() > 500) {
+                } else if (result.closestSwatch == PredominantColorProcessor.Swatch.ARTIFACT_PURPLE && colorTime.milliseconds() > 400) {
                     pattern =
                             pattern.substring(0, indexerState)
                                     + "P"
@@ -1270,15 +1017,11 @@ public class JWRC extends OpMode {
 
 
 
-
-
-
-
         }
 
-
-
-
+        if (!control) {
+            gate.reset();
+        }
 
 
 
@@ -1292,11 +1035,8 @@ public class JWRC extends OpMode {
         telemetry.addData("Best Match:", colorSensor.getAnalysis().closestSwatch);
         telemetry.addData("Angle", angle);
         telemetry.update();
+        hoodExtension.setPosition(0.1);
     }
-
-
-
-
 
 
 
@@ -1311,17 +1051,9 @@ public class JWRC extends OpMode {
 
 
 
-
-
-
-
         follower = Constants.createFollower(hardwareMap);
         follower.setStartingPose(startPose);
         buildPaths();
-
-
-
-
 
 
 
@@ -1334,12 +1066,8 @@ public class JWRC extends OpMode {
 
 
 
-
-
-
-
         colorSensor = new PredominantColorProcessor.Builder()
-                .setRoi(ImageRegion.asUnityCenterCoordinates(0.2, -0.5, 0.4, -0.8))
+                .setRoi(ImageRegion.asUnityCenterCoordinates(0.2, -0.85, 0.4, -0.95))
                 .setSwatches(
                         PredominantColorProcessor.Swatch.ARTIFACT_GREEN,
                         PredominantColorProcessor.Swatch.ARTIFACT_PURPLE,
@@ -1348,10 +1076,6 @@ public class JWRC extends OpMode {
                         PredominantColorProcessor.Swatch.YELLOW,
                         PredominantColorProcessor.Swatch.BLUE)
                 .build();
-
-
-
-
 
 
 
@@ -1365,18 +1089,10 @@ public class JWRC extends OpMode {
 
 
 
-
-
-
-
         frontLeftMotor = hardwareMap.get(DcMotor.class, "flm");
         frontRightMotor = hardwareMap.get(DcMotor.class, "frm");
         backLeftMotor = hardwareMap.get(DcMotor.class, "blm");
         backRightMotor = hardwareMap.get(DcMotor.class, "brm");
-
-
-
-
 
 
 
@@ -1387,16 +1103,8 @@ public class JWRC extends OpMode {
 
 
 
-
-
-
-
         frontLeftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         backLeftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
-
-
-
-
 
 
 
@@ -1407,11 +1115,7 @@ public class JWRC extends OpMode {
         turret.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         turret.setTargetPosition(0);
         turret.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        turret.setPower(1);
-
-
-
-
+        turret.setPower(0.8);
 
 
 
@@ -1428,28 +1132,12 @@ public class JWRC extends OpMode {
 
 
 
-
-
-
-
-
-
-
-
         indexer = hardwareMap.get(Servo.class, "index");
 
 
 
 
-
-
-
-
         hinge = hardwareMap.get(Servo.class, "h");
-
-
-
-
 
 
 
@@ -1460,19 +1148,11 @@ public class JWRC extends OpMode {
 
 
 
-
-
-
-
         IMU imu = hardwareMap.get(IMU.class, "imu");
         IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
                 RevHubOrientationOnRobot.LogoFacingDirection.LEFT,
                 RevHubOrientationOnRobot.UsbFacingDirection.UP));
         imu.initialize(parameters);
-
-
-
-
 
 
 
@@ -1492,15 +1172,7 @@ public class JWRC extends OpMode {
 
 
 
-
-
-
-
         String manual_shoot = "";
-
-
-
-
 
 
 
@@ -1514,19 +1186,7 @@ public class JWRC extends OpMode {
 
 
 
-
-
-
-
-
-
-
-
     }
-
-
-
-
 
 
 
@@ -1534,10 +1194,6 @@ public class JWRC extends OpMode {
     /** This method is called continuously after Init while waiting for "play". **/
     @Override
     public void init_loop() {}
-
-
-
-
 
 
 
@@ -1557,14 +1213,6 @@ public class JWRC extends OpMode {
 
 
 
-
-
-
-
-
-
-
-
     /** We do not use this because everything should automatically disable **/
     @Override
     public void stop() {}
@@ -1576,19 +1224,7 @@ public class JWRC extends OpMode {
 
 
 
-
-
-
-
-
-
-
-
 }
-
-
-
-
 
 
 
