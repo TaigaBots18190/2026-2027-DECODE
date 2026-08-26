@@ -1,0 +1,33 @@
+# Build
+.gradle/
+build/
+*/build/
+captures/
+.externalNativeBuild/
+.cxx/
+out/
+bin/
+gen/
+
+# Android / IDE
+local.properties
+*.iml
+.idea/
+.vscode/
+*.apk
+*.ap_
+*.dex
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Secrets and signing
+*.jks
+*.keystore
+google-services.json
+.env
+.env.*
+
+# Logs
+*.log
