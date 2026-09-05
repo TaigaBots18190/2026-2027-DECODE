@@ -8,7 +8,6 @@ import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.BezierCurve;
 import com.pedropathing.geometry.BezierLine;
 import com.pedropathing.geometry.Pose;
-import com.pedropathing.paths.HeadingInterpolator; // May need to use, idk yet
 import com.pedropathing.paths.PathBuilder;
 import com.pedropathing.paths.PathChain;
 import com.qualcomm.hardware.limelightvision.LLResult;
@@ -187,7 +186,7 @@ public class RelativeMinimumPatherV20 extends LinearOpMode{
 
                     }
 
-                    // Finding the so called eigenvector from the covariance matrix that contains the direction of the perpendicular regression plot
+                    // Finding the so-called eigenvector from the covariance matrix that contains the direction of the perpendicular regression plot
 
                     double pcaAngle =
                             0.5 * Math.atan2(
